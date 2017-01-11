@@ -9,4 +9,4 @@ filtered_data <- cleaned_data %>%
     separate(geom, c('lat', 'long'), ', ', convert = TRUE) %>%
     sample_n(50, replace = FALSE)
 
-write_json(filtered_data, 'sampled_data.json')
+write_json(filtered_data, 'data/sampled_data.json', pretty = TRUE)
