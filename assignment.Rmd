@@ -1,0 +1,43 @@
+---
+title: "Planning permission for the city of Paris in 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r map, echo=FALSE}
+library(leaflet)
+library(dplyr)
+
+sampled_data <- read.table('data/planning_permission_locations.txt')
+
+sampled_data %>%
+    leaflet() %>%
+    addTiles() %>%
+    addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
+```
+
+### Data processing
+
+The data that you see on the map come from the city of ParisData, the Open Data initiative from the city of Paris as they were on **12-07-2017**: [autorisations-durbanisme-h.csv]('https://opendata.paris.fr/explore/dataset/autorisations-durbanisme-h/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true').
+
+After some cleanup to remove invalid characters, I only kept the latitude, longitude and the year of the permission was asked.
+
+```{r data_processin, eval = FALSE}
+library(dplyr)
+library(tidyr)
+
+cleaned_data <- read.csv2('data/autorisations-durbanisme-h-clean.csv',
+                          quote = "",
+                          stringsAsFactors = FALSE,
+                          encoding = 'utf-8')
+filtered_data <- cleaned_data %>%
+    filter(geom != '') %>%
+    filter(annee_depot == 2016) %>%
+    select(geom) %>%
+    separate(geom, c('lat', 'long'), ', ', convert = TRUE)
+
+```
+
